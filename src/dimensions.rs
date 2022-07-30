@@ -295,6 +295,12 @@ impl Tag {
   }
 }
 
+impl fmt::Display for Tag {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f,"Tag: {}",self.name)
+  }
+}
+
 pub struct Asset {
   name : String,
   short_code : String,
@@ -303,12 +309,22 @@ pub struct Asset {
   pub critical_rationale : String,
   pub description : String,
   pub significance : String,
+  pub tags : Vec<Tag>,
   pub environment_properties : HashMap<String,AssetEnvironmentProperties>
 }
 
 impl Asset {
   pub fn new(a_name : &String, s_code : &String, a_type : &String, i_c: bool) -> Asset {
-    Asset{name : a_name.clone(), short_code : s_code.clone(), asset_type : a_type.clone(), is_critical : i_c, critical_rationale : "".to_string(), description : "".to_string(), significance : "".to_string(), environment_properties : HashMap::<String,AssetEnvironmentProperties>::new()}  
+    Asset{
+      name : a_name.clone(), 
+      short_code : s_code.clone(), 
+      asset_type : a_type.clone(), 
+      is_critical : i_c, 
+      critical_rationale : "".to_string(), 
+      description : "".to_string(), 
+      significance : "".to_string(), 
+      tags : Vec::<Tag>::new(),
+      environment_properties : HashMap::<String,AssetEnvironmentProperties>::new()}  
   }
 
   pub fn update(&mut self, a_attr : &str, a_value : &str) {
@@ -333,11 +349,15 @@ impl Asset {
 
 impl fmt::Display for Asset {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    let mut x = "".to_string();
-    for pt in &self.environment_properties {
-      x.push_str(&pt.1.to_string());
+    let mut tags = "".to_string();
+    for tag in &self.tags {
+      tags.push_str(&tag.to_string());
     }
-    write!(f,"Name: {}, Short code: {}, Type: {}, Description: {}, Significance: {}, Properties: {}",self.name,self.short_code,self.asset_type,self.description,self.significance,x)
+    let mut props = "".to_string();
+    for pt in &self.environment_properties {
+      props.push_str(&pt.1.to_string());
+    }
+    write!(f,"Name: {}, Short code: {}, Type: {}, Tags: {}, Description: {}, Significance: {}, Properties: {}",self.name,self.short_code,self.asset_type,tags,self.description,self.significance,props)
   }
 }
 

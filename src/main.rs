@@ -30,7 +30,6 @@ fn main() {
   let mut p_settings : Option<Box<dimensions::ProjectSettings>> = None;
   let mut tv_types : Option<Box<Vec::<dimensions::ValueType>>> = None;
   let mut roles : Option<Box<Vec::<dimensions::Role>>> = None;
-  let mut tags = Vec::<dimensions::Tag>::new();
   let mut assets : Vec::<dimensions::Asset> = Vec::<dimensions::Asset>::new();
   let mut attr_dict : HashMap<String,String> = HashMap::<String,String>::new();
 
@@ -135,10 +134,10 @@ fn main() {
               in_security_property = 1;
             }
             else if el.name == "tag" {
-              for el_attr in el.attributes() {
-                if el_attr.name == "name" {
-                  tags.push(dimensions::Tag::new(&el_attr.value.to_string()));
-                }
+              attributes_to_dict(&el,HashSet::from(["name"]),&mut attr_dict);
+              if in_asset == 1 {
+                let last_idx = assets.len() - 1;
+                assets[last_idx].tags.push(dimensions::Tag::new(&attr_dict.get("name").unwrap().clone()));   
               }
             }
             else if el.name == "asset" {
@@ -296,9 +295,9 @@ fn main() {
     for role in &**x {
       println!("{}",role);
     }
-  }
+  } 
   for asset in &assets {
     println!("{}",asset);
-  }
-  */
+  } */
+  
 }

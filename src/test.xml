@@ -228,6 +228,7 @@
 </role>
 <asset name="ICT credentials" short_code="IC" type="Information" is_critical="0">
   <description>ACME ICT login credentials.  Based on WMS pay number.</description>
+  <tag name="testTag" />
   <significance>Obtaining some or all of ICT credentials may allow an unauthorised person to logically impersonate an authorised principal</significance>
   <critical_rationale></critical_rationale>
   <security_property environment="Day" property="confidentiality" value="Medium">
