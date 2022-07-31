@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+
 mod model_parser;
 mod dimensions;
 use model_parser::ModelParser;
@@ -7,8 +7,7 @@ use model_parser::ModelParser;
 fn main() {
 
   let mut mp = ModelParser::new();
-  let model_file = PathBuf::from("./test.xml");
-  mp.parse(&model_file);  
+  mp.parse(&"./test.xml".to_string());  
 
   if let Some(x) = &mp.tv_types {
     for tv in &**x {

@@ -1,7 +1,12 @@
-use std::{collections::HashMap,collections::HashSet,fs::File, path::PathBuf};
+use std::{collections::HashMap,collections::HashSet,fs::File};
 use xml_oxide::{sax::parser::Parser, sax::Event, sax::StartElement};
 
-use crate::dimensions::{ProjectSettings,ValueType,Role,Asset,AssetEnvironmentProperties,Tag};
+use crate::dimensions::projectsettings::ProjectSettings;
+use crate::dimensions::valuetype::ValueType;
+use crate::dimensions::role::Role;
+use crate::dimensions::asset::Asset;
+use crate::dimensions::asset::AssetEnvironmentProperties;
+use crate::dimensions::tag::Tag;
 
 pub struct ModelParser {
   in_text : u8,
@@ -59,10 +64,9 @@ impl ModelParser {
     }
   }
 
-  pub fn parse(&mut self, model_file : &PathBuf) {
+  pub fn parse(&mut self, model_file : &String) {
 
-//    let f = File::open(&model_file.into_os_string().into_string()).unwrap();
-    let f = File::open("./test.xml").unwrap();
+    let f = File::open(model_file).unwrap();
     let mut p = Parser::from_reader(f);
 
     loop {
