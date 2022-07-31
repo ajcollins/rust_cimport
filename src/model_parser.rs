@@ -1,66 +1,17 @@
-use std::{collections::HashMap,collections::HashSet,fs::File};
-use xml_oxide::{sax::parser::Parser, sax::Event, sax::StartElement};
-
-use crate::dimensions::projectsettings::ProjectSettings;
-use crate::dimensions::valuetype::ValueType;
-use crate::dimensions::role::Role;
-use crate::dimensions::asset::Asset;
-use crate::dimensions::asset::AssetEnvironmentProperties;
-use crate::dimensions::tag::Tag;
+use std::{fs::File};
+use xml_oxide::{sax::parser::Parser, sax::Event};
+use crate::decorators::{parsedecorator::ParseDecorator,tvtypes::TVTypesHandler,domainvalues::DomainValuesHandler, projectsettings::ProjectSettingsHandler, riskanalysis::RiskAnalysisHandler, savedstate::SavedState};
 
 pub struct ModelParser {
-  in_text : u8,
-  in_rationale :u8,
-  in_remarks : u8,
-  in_significance : u8,
-  in_critical_rationale : u8,
-  in_background : u8,
-  in_strategic_goals : u8,
-  in_scope : u8,
-  in_entry : u8,
-  in_revision : u8,
-  in_role : u8,
-  in_value_type : u8,
-  in_asset : u8,
-  in_security_property : u8,
-  pub p_settings : Option<Box<ProjectSettings>>,
-  pub tv_types : Option<Box<Vec::<ValueType>>>,
-  pub roles : Option<Box<Vec::<Role>>>,
-  pub assets : Vec<Asset>,
-  attr_dict : HashMap<String,String>
+  pub state : SavedState,
+  decorator : Option<Box<dyn ParseDecorator>>
 }
 
 impl ModelParser {
   pub fn new() -> ModelParser {
     ModelParser {
-      in_text : 0,
-      in_rationale : 0,
-      in_remarks : 0,
-      in_significance : 0,
-      in_critical_rationale : 0,
-      in_background : 0,
-      in_strategic_goals : 0,
-      in_scope : 0,
-      in_entry : 0,
-      in_revision : 0,
-      in_role : 0,
-      in_value_type : 0,
-      in_asset : 0,
-      in_security_property : 0,
-      p_settings : None,
-      tv_types : None,
-      roles : None,
-      assets : Vec::<Asset>::new(),
-      attr_dict : HashMap::<String,String>::new()
-    }
-  }
-
-  fn attributes_to_dict(&mut self, el: &StartElement, attr_names : HashSet::<&str>) {
-    self.attr_dict.clear();
-    for el_attr in el.attributes() {
-      if attr_names.contains(el_attr.name) {
-        self.attr_dict.insert(el_attr.name.to_string(),el_attr.value.to_string());
-      }
+      state : SavedState::new(),
+      decorator : None
     }
   }
 
@@ -81,110 +32,19 @@ impl ModelParser {
           Event::StartElement(el) => {
             if !el.is_empty {
               if el.name == "tvtypes" {
-                self.tv_types = Some(Box::new(Vec::<ValueType>::new()));
+                self.decorator = Some(Box::new(TVTypesHandler::new()));
               }
-              else if el.name == "domainvalues" && self.tv_types == None {
-                self.tv_types = Some(Box::new(Vec::<ValueType>::new()));
+              if el.name == "domainvalues" {
+                self.decorator = Some(Box::new(DomainValuesHandler::new()));
               }
-              else if el.name == "vulnerability_type" || el.name == "threat_type" || el.name == "threat_value" || el.name == "risk_value" || el.name == "countermeasure_value" || el.name == "severity_value" || el.name == "likelihood_value" {
-                self.attributes_to_dict(&el,HashSet::from(["name"]));
-                if let Some(x) = &mut self.tv_types {
-                  x.push( ValueType::new(self.attr_dict.get("name").unwrap(),&"".to_string()));
-                  self.in_value_type = 1;
-                }
-                else {
-                  panic!("No TVTypes vector defined");
-                }
+              if el.name == "cairis" {
+                self.decorator = Some(Box::new(ProjectSettingsHandler::new()));
               }
-              else if el.name == "description" {
-                self.in_text = 1;
+              if el.name == "riskanalysis" {
+                self.decorator = Some(Box::new(RiskAnalysisHandler::new()));
               }
-              else if el.name == "definition" {
-                self.in_text = 1;
-              }
-              else if el.name == "rationale" {
-                self.in_rationale = 1;
-              }
-              else if el.name == "significance" {
-                self.in_significance = 1;
-              }
-              else if el.name == "project_settings" {
-                self.attributes_to_dict(&el,HashSet::from(["name"]));
-                self.p_settings = Some(Box::new(ProjectSettings::new(self.attr_dict.get("name").unwrap())));
-              }
-              else if el.name == "background" || el.name == "definition" {
-                self.in_background = 1;
-              }
-              else if el.name == "remarks" {
-                self.in_remarks = 1;
-              }
-              else if el.name == "strategic_goals" {
-                self.in_strategic_goals = 1;
-              }
-              else if el.name == "scope" {
-                self.in_scope = 1;
-              }
-              else if el.name == "entry" {
-                self.attributes_to_dict(&el,HashSet::from(["name"]));
-                self.in_entry = 1;
-              }
-              else if el.name == "contributor" {
-                self.attributes_to_dict(&el,HashSet::from(["first_name","surname","affiliation","role"]));
-                let first_name : &String = self.attr_dict.get("first_name").unwrap();
-                let surname : &String = self.attr_dict.get("surname").unwrap();
-                let affil : &String = self.attr_dict.get("affiliation").unwrap();
-                let role : &String = self.attr_dict.get("role").unwrap();
-
-                match &mut self.p_settings {
-                  Some(x) => {
-                    x.contributors.push((first_name.clone(),surname.clone(),affil.clone(),role.clone()));
-                  }
-                  None => {}
-                }
-              }
-              else if el.name == "revision" {
-                self.attributes_to_dict(&el,HashSet::from(["number","date"]));
-                self.in_revision = 1;
-              }
-              else if el.name == "role" {
-                self.attributes_to_dict(&el,HashSet::from(["name","type","short_code"]));
-                let new_role = Role::new(self.attr_dict.get("name").unwrap(),self.attr_dict.get("type").unwrap(),self.attr_dict.get("short_code").unwrap(),&"".to_string());
-
-                match &mut self.roles {
-                  Some(x) => { x.push(new_role);}
-                  None => {self.roles = Some(Box::new(vec![new_role]));}
-                }
-                self.in_role = 1;
-              }
-              else if el.name == "security_property" {
-                self.attributes_to_dict(&el,HashSet::from(["environment","property","value"]));
-                let env_name : &String = self.attr_dict.get("environment").unwrap();
-                let last_idx = self.assets.len() - 1;
-                let env_props = &mut self.assets[last_idx].environment_properties;
-                if !env_props.contains_key(env_name) {
-                  env_props.insert(env_name.clone(),AssetEnvironmentProperties::new(&env_name));
-                }
-                self.in_security_property = 1;
-              }
-              else if el.name == "tag" {
-                self.attributes_to_dict(&el,HashSet::from(["name"]));
-                if self.in_asset == 1 {
-                  let last_idx = self.assets.len() - 1;
-                  self.assets[last_idx].tags.push(Tag::new(&self.attr_dict.get("name").unwrap().clone()));   
-                }
-              }
-              else if el.name == "asset" {
-                self.attributes_to_dict(&el,HashSet::from(["name","short_code","type","is_critical"]));
-                let mut critical_flag = false;
-                if self.attr_dict.get("is_critical").unwrap() == "1" {
-                  critical_flag = true;
-                }
-                self.assets.push( Asset::new(
-                  self.attr_dict.get("name").unwrap(),
-                  self.attr_dict.get("short_code").unwrap(),
-                  self.attr_dict.get("type").unwrap(),
-                  critical_flag));
-                self.in_asset = 1;
+              else if let Some(d) = &mut self.decorator {
+                d.parse_start_element(&el);
               }
             }
           }
@@ -192,115 +52,19 @@ impl ModelParser {
             if el.name == "feed" {
               break;
             }
-            else if el.name == "vulnerability_type" || el.name == "threat_type" || el.name == "threat_value" || el.name == "risk_value" || el.name == "countermeasure_value" || el.name == "severity_value" || el.name == "likelihood_value" {
-              self.in_value_type = 0;
-            }
-            else if el.name == "revision" {
-              self.in_revision = 0;
-            }
-            else if el.name == "entry" {
-              self.in_entry = 0;
-            }
-            else if el.name == "role" {
-              self.in_role = 0;
-            }
-            else if el.name == "role" {
-              self.in_asset = 0;
-            }
-            else if el.name == "security_property" {
-              self.in_security_property = 0;
+            else if el.name == "tvtypes" || el.name == "domainvalues" || el.name == "cairis" || el.name == "riskanalysis" {
+              if let Some(d) = &mut self.decorator {
+                d.save_state(&mut self.state);
+                self.decorator = None;
+              }
+            } 
+            else if let Some(d) = &mut self.decorator {
+              d.parse_end_element(&el);
             }
           }
           Event::Characters(data) => {
-            if self.in_background == 1 {
-              match &mut self.p_settings {
-                Some(x) => {
-                  x.background = data.to_string();
-                }
-                None => {}
-              }
-              self.in_background = 0;
-            }
-            else if self.in_strategic_goals == 1 {
-              match &mut self.p_settings {
-                Some(x) => {
-                  x.strategic_goals = data.to_string();
-                }
-                None => {}
-              }
-              self.in_strategic_goals = 0;
-            }
-            else if self.in_scope == 1 {
-              match &mut self.p_settings {
-                Some(x) => {
-                  x.scope = data.to_string();
-                }
-                None => {}
-              }
-              self.in_scope = 0;
-            }
-            else if self.in_entry == 1 && self.in_text == 1 {
-              match &mut self.p_settings {
-                Some(x) => {
-                  x.naming_conventions.insert(self.attr_dict.get("name").unwrap().clone(),data.to_string());
-                }
-                None => {}
-              }
-              self.in_text = 0;
-            }
-            else if self.in_revision == 1 && self.in_remarks == 1 {
-              match &mut self.p_settings {
-                Some(x) => {
-                  let revision_no : &String = self.attr_dict.get("number").unwrap();
-                  let revision_date : &String = self.attr_dict.get("date").unwrap();
-                  x.revisions.push((revision_no.clone(),revision_date.clone(),data.to_string()));
-                }
-                None => {}
-              }
-              self.in_remarks = 0;
-            }
-            else if self.in_role == 1 && self.in_text == 1 {
-              match &mut self.roles {
-                Some(x) => {
-                  let last_idx = x.len() - 1;
-                  x[last_idx].description = data.to_string();   
-                },
-                None => {} 
-              } 
-              self.in_text = 0;
-            }
-            else if self.in_value_type == 1 && self.in_text == 1 {
-              match &mut self.tv_types {
-                Some(x) => {
-                  let last_idx = x.len() - 1;
-                  x[last_idx].description = data.to_string();   
-                }
-                None => {}
-              }
-              self.in_text = 0;
-            }
-            else if self.in_asset == 1 && self.in_significance == 1 {
-              let last_idx = self.assets.len() - 1;
-              self.assets[last_idx].significance = data.to_string();   
-              self.in_significance = 0;
-            }
-            else if self.in_asset == 1 && self.in_text == 1 {
-              let last_idx = self.assets.len() - 1;
-              self.assets[last_idx].description = data.to_string();   
-              self.in_text = 0;
-            }
-            else if self.in_asset == 1 && self.in_critical_rationale == 1 {
-              let last_idx = self.assets.len() - 1;
-              self.assets[last_idx].critical_rationale = data.to_string();   
-              self.in_critical_rationale = 0;
-            }
-            else if self.in_security_property == 1 && self.in_rationale == 1 {
-              let last_idx = self.assets.len() - 1;
-              let env_name : &String = self.attr_dict.get("environment").unwrap();
-              let s_prop : &String = self.attr_dict.get("property").unwrap();
-              let s_prop_v : &String = self.attr_dict.get("value").unwrap();
-              self.assets[last_idx].update_security_property(env_name,s_prop,s_prop_v,&data);
-              self.in_rationale = 0;
+            if let Some(d) = &mut self.decorator {
+              d.parse_characters(&data);
             }
           }
           Event::Reference(_) => {}
@@ -313,5 +77,4 @@ impl ModelParser {
       } 
     }
   }
-
 }

@@ -20,6 +20,7 @@ pub enum QualitativeValue {
   High = 3
 }
 
+#[derive(Clone)]
 pub struct SecurityPropertyValue {
   pub name : SecurityProperty,
   pub value : QualitativeValue,

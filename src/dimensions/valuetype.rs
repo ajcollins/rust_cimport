@@ -1,6 +1,6 @@
 use std::fmt;
 
-#[derive(PartialEq)]
+#[derive(Clone,PartialEq)]
 pub struct ValueType {
   name : String,
   pub description: String

@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::fmt;
 
+#[derive(Clone)]
 pub struct ProjectSettings {
   pub name:  String,
   pub background : String,

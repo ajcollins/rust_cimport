@@ -1,5 +1,6 @@
 use std::fmt;
 
+#[derive(Clone)]
 enum RoleType {
   Stakeholder,
   Attacker,
@@ -22,6 +23,7 @@ impl fmt::Display for RoleType {
   }
 }
 
+#[derive(Clone)]
 pub struct Role {
   name : String,
   role_type : RoleType,

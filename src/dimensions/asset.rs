@@ -3,6 +3,7 @@ use std::fmt;
 use crate::dimensions::securityproperty::{SecurityProperty,SecurityPropertyValue,QualitativeValue};
 use crate::dimensions::tag::Tag;
 
+#[derive(Clone)]
 pub struct AssetEnvironmentProperties {
   pub name : String,
   properties : [SecurityPropertyValue ; 8]
@@ -77,6 +78,7 @@ fn test_update_asset_environment_properties() {
   assert_eq!(prop.rationale,"TBC".to_string());
 }
 
+#[derive(Clone)]
 pub struct Asset {
   name : String,
   short_code : String,
@@ -101,15 +103,6 @@ impl Asset {
       significance : "".to_string(), 
       tags : Vec::<Tag>::new(),
       environment_properties : HashMap::<String,AssetEnvironmentProperties>::new()}  
-  }
-
-  pub fn update(&mut self, a_attr : &str, a_value : &str) {
-    match a_attr {
-      "critical_rationale" => {self.critical_rationale = a_value.to_string()},
-      "significance" => {self.significance = a_value.to_string()},
-      "description" => {self.description = a_value.to_string()},
-      &_ => panic!("{} is an unknown asset attribute",a_attr)
-    };
   }
 
   pub fn add_environment(&mut self, env_name: &String) {
@@ -147,17 +140,6 @@ fn test_create_asset() {
   assert_eq!(a.description,"".to_string());
   assert_eq!(a.significance,"".to_string());
   assert_eq!(a.critical_rationale,"".to_string());
-}
-
-#[test]
-fn test_update_asset() {
-  let mut a = Asset::new(&"An asset".to_string(),&"SC".to_string(),&"Information".to_string(),false);
-  a.update("critical_rationale","cr TBC");
-  a.update("description","description TBC");
-  a.update("significance","significance TBC");
-  assert_eq!(a.description,"description TBC".to_string());
-  assert_eq!(a.significance,"significance TBC".to_string());
-  assert_eq!(a.critical_rationale,"cr TBC".to_string());
 }
 
 #[test]
