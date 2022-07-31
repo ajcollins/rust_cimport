@@ -204,7 +204,7 @@ impl ModelParser {
             else if el.name == "role" {
               self.in_role = 0;
             }
-            else if el.name == "role" {
+            else if el.name == "asset" {
               self.in_asset = 0;
             }
             else if el.name == "security_property" {
