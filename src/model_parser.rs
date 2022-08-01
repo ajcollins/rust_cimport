@@ -34,13 +34,13 @@ impl ModelParser {
               if el.name == "tvtypes" {
                 self.decorator = Some(Box::new(TVTypesHandler::new()));
               }
-              if el.name == "domainvalues" {
+              else if el.name == "domainvalues" {
                 self.decorator = Some(Box::new(DomainValuesHandler::new()));
               }
-              if el.name == "cairis" {
+              else if el.name == "cairis" {
                 self.decorator = Some(Box::new(ProjectSettingsHandler::new()));
               }
-              if el.name == "riskanalysis" {
+              else if el.name == "riskanalysis" {
                 self.decorator = Some(Box::new(RiskAnalysisHandler::new()));
               }
               else if let Some(d) = &mut self.decorator {
