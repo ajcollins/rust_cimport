@@ -1,4 +1,4 @@
-
+use std::env;
 mod model_parser;
 mod dimensions;
 mod decorators;
@@ -8,9 +8,11 @@ use model_parser::ModelParser;
 
 fn main() {
 
+  let args : Vec<String> = env::args().collect();
+  let model_file = &args[1];
   let mut mp = ModelParser::new();
-  mp.parse(&"./test.xml".to_string());  
-
+  mp.parse(model_file);
+/* 
   println!("THREAT/VULNERABILITY TYPES");
   if let Some(tvs) = &mp.state.tv_types {
     for tv in tvs.iter().enumerate() {
@@ -48,5 +50,12 @@ fn main() {
       println!("{}",asset.1);
     } 
   }
-  
+*/
+  println!("VULNERABILITIES");
+  if let Some(vuls) = &mp.state.vulnerabilities {
+    for vul in vuls.iter().enumerate() {
+      println!("{}",vul.1);
+    } 
+  }
+
 }

@@ -2,6 +2,7 @@ use std::{collections::HashMap,collections::HashSet};
 use xml_oxide::{sax::StartElement,sax::EndElement};
 use crate::dimensions::role::Role;
 use crate::dimensions::asset::Asset;
+use crate::dimensions::vulnerability::{Vulnerability, VulnerabilityEnvironment};
 use crate::dimensions::tag::Tag;
 use crate::dimensions::asset::AssetEnvironmentProperties;
 use crate::decorators::helpers::attributes_to_dict;
@@ -16,8 +17,10 @@ pub struct RiskAnalysisHandler {
   in_significance : bool,
   in_critical_rationale : bool,
   in_rationale : bool,
+  in_vulnerability : bool,
   roles : Vec<Role>,
   assets : Vec<Asset>,
+  vulnerabilities : Vec<Vulnerability>,
   attr_dict : HashMap<String,String>
 }
 
@@ -31,8 +34,10 @@ impl RiskAnalysisHandler {
       in_significance : false,
       in_critical_rationale : false,
       in_rationale : false,
+      in_vulnerability : false,
       roles : Vec::<Role>::new(),
       assets : Vec::<Asset>::new(),
+      vulnerabilities : Vec::<Vulnerability>::new(),
       attr_dict : HashMap::<String,String>::new()
     }
   }
@@ -87,6 +92,26 @@ impl ParseDecorator for RiskAnalysisHandler {
         critical_flag));
       self.in_asset = true;
     }
+    else if el.name == "vulnerability" {
+      attributes_to_dict(&mut self.attr_dict,&el,HashSet::from(["name","type"]));
+      self.vulnerabilities.push (Vulnerability::new(
+        self.attr_dict.get("name").unwrap(),
+        self.attr_dict.get("type").unwrap())
+      );
+      self.in_vulnerability = true;
+    }
+    else if el.name == "vulnerability_environment" {
+      attributes_to_dict(&mut self.attr_dict,&el,HashSet::from(["name","severity"]));
+      let last_idx = self.vulnerabilities.len() - 1;
+      self.vulnerabilities[last_idx].environments.push(VulnerabilityEnvironment::new(self.attr_dict.get("name").unwrap(),self.attr_dict.get("severity").unwrap()));   
+    }
+    else if el.name == "vulnerable_asset" {
+      attributes_to_dict(&mut self.attr_dict,&el,HashSet::from(["name"]));
+      let last_vul_idx = self.vulnerabilities.len() - 1;
+      let envs = &mut self.vulnerabilities[last_vul_idx].environments;
+      let last_env_idx = envs.len();
+      envs[last_env_idx - 1].assets.push(self.attr_dict.get("name").unwrap().clone());
+    }
   }
   fn parse_characters(&mut self, data : &str) {
     if self.in_role == true && self.in_description == true {
@@ -117,6 +142,11 @@ impl ParseDecorator for RiskAnalysisHandler {
       self.assets[last_idx].update_security_property(env_name,s_prop,s_prop_v,&data);
       self.in_rationale = false;
     }
+    else if self.in_vulnerability == true && self.in_description == true {
+      let last_idx = self.vulnerabilities.len() - 1;
+      self.vulnerabilities[last_idx].description = data.to_string();   
+      self.in_description = false;
+    }
   }
   
   fn parse_end_element(&mut self, el: &EndElement){
@@ -129,10 +159,14 @@ impl ParseDecorator for RiskAnalysisHandler {
     else if el.name == "security_property" {
       self.in_security_property = false;
     }
+    else if el.name == "vulnerability" {
+      self.in_vulnerability = false;
+    }
   }
 
   fn save_state(&self, ss: &mut SavedState){
     ss.roles = Some(Box::new(self.roles.clone()));
     ss.assets = Some(Box::new(self.assets.clone()));
+    ss.vulnerabilities = Some(Box::new(self.vulnerabilities.clone()));
   }
 }

@@ -1,6 +1,7 @@
 use crate::dimensions::valuetype::ValueType;
 use crate::dimensions::role::Role;
 use crate::dimensions::asset::Asset;
+use crate::dimensions::vulnerability::Vulnerability;
 use crate::dimensions::projectsettings::ProjectSettings;
 use crate::dimensions::environment::Environment;
 
@@ -10,7 +11,8 @@ pub struct SavedState {
   pub p_settings : Option<Box<ProjectSettings>>,
   pub environments : Option<Box<Vec<Environment>>>,
   pub roles : Option<Box<Vec<Role>>>,
-  pub assets : Option<Box<Vec<Asset>>>
+  pub assets : Option<Box<Vec<Asset>>>,
+  pub vulnerabilities : Option<Box<Vec<Vulnerability>>>
 }
 
 impl SavedState {
@@ -21,7 +23,8 @@ impl SavedState {
       p_settings : None,
       environments : None,
       roles : None,
-      assets : None
+      assets : None,
+      vulnerabilities : None
     }
   }
 }

@@ -1,6 +1,6 @@
 use std::fmt;
 
-#[derive(Clone)]
+#[derive(Clone,PartialEq)]
 pub struct Tag {
   name : String
 }
