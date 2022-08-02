@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE cairis_model PUBLIC "-//CAIRIS//DTD MODEL 1.0//EN" "https://cairis.org/dtd/cairis_model.dtd"> 
+<!DOCTYPE cairis_model PUBLIC "-//CAIRIS//DTD MODEL 1.0//EN" "http://cairis.org/dtd/cairis_model.dtd">
 <cairis_model>
 
 
@@ -190,6 +190,32 @@
     <high>Critical to night-time operations.</high>
   </asset_values>
 </environment>
+<environment name="Comp1" short_code="C1" >
+  <definition>Composite 1</definition>
+  <asset_values>
+    <none>To be defined</none>
+    <low>To be defined</low>
+    <medium>To be defined</medium>
+    <high>To be defined</high>
+  </asset_values>
+  <composite_properties duplication="Maximise" >
+    <sub_environment name="Day" />
+    <sub_environment name="Night" />
+  </composite_properties>
+</environment>
+<environment name="Comp2" short_code="C2" >
+  <definition>Composite 2</definition>
+  <asset_values>
+    <none>To be defined</none>
+    <low>To be defined</low>
+    <medium>To be defined</medium>
+    <high>To be defined</high>
+  </asset_values>
+  <composite_properties duplication="Override" overriding_environment="Day" >
+    <sub_environment name="Day" />
+    <sub_environment name="Night" />
+  </composite_properties>
+</environment>
 </cairis>
 
 <riskanalysis>
@@ -202,17 +228,11 @@
 <role name="Vendor" type="Stakeholder" short_code="VENDOR" >
   <description>Vendor of SCADA, Telemetry, and Control System software</description>
 </role>
-<role name="Cracker" type="Attacker" short_code="CRACK" >
-  <description>Cracker</description>
-</role>
 <role name="ICT Partner" type="Stakeholder" short_code="ICT_P" >
   <description>ICT partner contractually responsible for delivering ICT services to ACME.</description>
 </role>
 <role name="Instrument Technician" type="Stakeholder" short_code="TECH" >
   <description>Instrument Technicians are responsible for maintaining operational SCADA, Telemetry, and Control System software.</description>
-</role>
-<role name="Petty Criminal" type="Attacker" short_code="PETTY_CRIM" >
-  <description>Engages in acts of petty crime</description>
 </role>
 <role name="Integrator" type="Stakeholder" short_code="INTGR" >
   <description>Work with process partners to implement the control philosophy associated with a capital project</description>
@@ -225,6 +245,12 @@
 </role>
 <role name="Machine" type="Stakeholder" short_code="MACH" >
   <description>System hardware</description>
+</role>
+<role name="Cracker" type="Attacker" short_code="CRACK" >
+  <description>Cracker</description>
+</role>
+<role name="Petty Criminal" type="Attacker" short_code="PETTY_CRIM" >
+  <description>Engages in acts of petty crime</description>
 </role>
 <asset name="ICT credentials" short_code="IC" type="Information" is_critical="0">
   <description>ACME ICT login credentials.  Based on WMS pay number.</description>
@@ -611,42 +637,6 @@
     <rationale>Operations contingent on human staff</rationale>
   </security_property>
 </asset>
-<vulnerability name="Ubiquitous identity and knowledge" type="Design">
-  <description>The user id component of ICT access credentials are multi-use, and this knowledge is commonly known and, occasionally, shared.</description>
-  <vulnerability_environment name="Day" severity="Marginal">
-    <vulnerable_asset name="ICT credentials" />
-  </vulnerability_environment>
-  <vulnerability_environment name="Night" severity="Critical">
-    <vulnerable_asset name="ICT credentials" />
-  </vulnerability_environment>
-</vulnerability>
-<vulnerability name="Exposed cabinets" type="Implementation">
-  <description>Equipment cabinets are easily accessible to non-authorised personnel</description>
-  <vulnerability_environment name="Day" severity="Critical">
-    <vulnerable_asset name="ICT cabinet" />
-  </vulnerability_environment>
-  <vulnerability_environment name="Night" severity="Negligible">
-    <vulnerable_asset name="ICT cabinet" />
-  </vulnerability_environment>
-</vulnerability>
-<vulnerability name="Redundant hardware" type="Implementation">
-  <description>Unused PC hardware left lying around may contain sensitive data or credentials</description>
-  <vulnerability_environment name="Day" severity="Marginal">
-    <vulnerable_asset name="ICT PC" />
-  </vulnerability_environment>
-  <vulnerability_environment name="Night" severity="Marginal">
-    <vulnerable_asset name="ICT PC" />
-  </vulnerability_environment>
-</vulnerability>
-<vulnerability name="Unknown applications" type="Implementation">
-  <description>PC and PC applications with no clear provenance may be more liable to exploitation, and used as an attack vector for obtaining sensitive data or credentials</description>
-  <vulnerability_environment name="Day" severity="Marginal">
-    <vulnerable_asset name="ICT PC" />
-  </vulnerability_environment>
-  <vulnerability_environment name="Night" severity="Marginal">
-    <vulnerable_asset name="ICT PC" />
-  </vulnerability_environment>
-</vulnerability>
 <vulnerability name="Incompatible security controls" type="Configuration">
   <description>Security software is incompatible with SCADA, Telemetry, or Control System application</description>
   <vulnerability_environment name="Day" severity="Marginal">
@@ -687,6 +677,15 @@
     <vulnerable_asset name="Intrusion Detection System" />
   </vulnerability_environment>
 </vulnerability>
+<vulnerability name="Ubiquitous identity and knowledge" type="Design">
+  <description>The user id component of ICT access credentials are multi-use, and this knowledge is commonly known and, occasionally, shared.</description>
+  <vulnerability_environment name="Day" severity="Marginal">
+    <vulnerable_asset name="ICT credentials" />
+  </vulnerability_environment>
+  <vulnerability_environment name="Night" severity="Critical">
+    <vulnerable_asset name="ICT credentials" />
+  </vulnerability_environment>
+</vulnerability>
 <vulnerability name="Wide Scope" type="Design">
   <description>Red team testers exercise discretion over such a wide scope that activities may be carried out which are legally ambiguous.</description>
   <vulnerability_environment name="Day" severity="Critical">
@@ -695,6 +694,33 @@
     <vulnerable_asset name="Enterprise SCADA Network" />
     <vulnerable_asset name="ICT Application" />
     <vulnerable_asset name="STCS Application" />
+  </vulnerability_environment>
+</vulnerability>
+<vulnerability name="Exposed cabinets" type="Implementation">
+  <description>Equipment cabinets are easily accessible to non-authorised personnel</description>
+  <vulnerability_environment name="Day" severity="Critical">
+    <vulnerable_asset name="ICT cabinet" />
+  </vulnerability_environment>
+  <vulnerability_environment name="Night" severity="Negligible">
+    <vulnerable_asset name="ICT cabinet" />
+  </vulnerability_environment>
+</vulnerability>
+<vulnerability name="Redundant hardware" type="Implementation">
+  <description>Unused PC hardware left lying around may contain sensitive data or credentials</description>
+  <vulnerability_environment name="Day" severity="Marginal">
+    <vulnerable_asset name="ICT PC" />
+  </vulnerability_environment>
+  <vulnerability_environment name="Night" severity="Marginal">
+    <vulnerable_asset name="ICT PC" />
+  </vulnerability_environment>
+</vulnerability>
+<vulnerability name="Unknown applications" type="Implementation">
+  <description>PC and PC applications with no clear provenance may be more liable to exploitation, and used as an attack vector for obtaining sensitive data or credentials</description>
+  <vulnerability_environment name="Day" severity="Marginal">
+    <vulnerable_asset name="ICT PC" />
+  </vulnerability_environment>
+  <vulnerability_environment name="Night" severity="Marginal">
+    <vulnerable_asset name="ICT PC" />
   </vulnerability_environment>
 </vulnerability>
 <attacker name="Ben" image="">
@@ -759,7 +785,7 @@ Gareth has friends who work as building labourers as part of some capital projec
 <attacker name="Unintentional Rick" image="">
   <description>Rick has a basic operating knowledge of Windows; enough to carry out his day-to-day routines, check his email, and navigate the main sections of InfoPortal.
 
-Rick isn't a power-user; he acknowledges that younger "whizz kids" are much more adept at using PCs than he is.  Consequently, he only uses a sub-set of the desktop icons currently on his desktop.  "I don't know what these other applications do", Rick says,"I've tried clicking on one and it just gives me a Data Protection Warning.  I guess this means I'm not authorised to use it."</description>
+Rick isn't a power-user; he acknowledges that younger &quot;whizz kids&quot; are much more adept at using PCs than he is.  Consequently, he only uses a sub-set of the desktop icons currently on his desktop.  &quot;I don't know what these other applications do&quot;, Rick says,&quot;I've tried clicking on one and it just gives me a Data Protection Warning.  I guess this means I'm not authorised to use it.&quot;</description>
   <attacker_environment name="Day">
     <attacker_role name="Plant Operator" />
     <motivation name="Productivity" />
@@ -998,10 +1024,22 @@ Ben promptly installs a keylogger onto this PC before logging out.</narrative>
 <asset_association environment="Day"  head_name="InfoPortal" head_nav="0" head_adornment="Association" head_nry="1" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="Corporate Network">
   <rationale>Portal is on the corporate network.</rationale>
 </asset_association>
-<asset_association environment="Day"  head_name="STCS Application" head_nav="0" head_adornment="Association" head_nry="1" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="STCS credentials" >
+<asset_association environment="Day"  head_name="STCS Application" head_nav="0" head_adornment="Association" head_nry="1" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="STCS credentials">
   <rationale>Credentials are needed to use STCS applications.</rationale>
 </asset_association>
 <asset_association environment="Day"  head_name="Firewall" head_nav="0" head_adornment="Association" head_nry="1" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="Intrusion Detection System">
+  <rationale>Firewall mediates access to the IDS</rationale>
+</asset_association>
+<asset_association environment="Day"  head_name="Works Network" head_nav="0" head_adornment="Association" head_nry="1" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="1" tail_name="Suppress Event">
+  <rationale>Events are specific to works network.</rationale>
+</asset_association>
+<asset_association environment="Night"  head_name="InfoPortal" head_nav="0" head_adornment="Association" head_nry="1" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="Corporate Network">
+  <rationale>Portal is on corporate network.</rationale>
+</asset_association>
+<asset_association environment="Night"  head_name="STCS Application" head_nav="0" head_adornment="Association" head_nry="1" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="STCS credentials">
+  <rationale>Credentials are used to use STCS applications.</rationale>
+</asset_association>
+<asset_association environment="Night"  head_name="Firewall" head_nav="0" head_adornment="Association" head_nry="1" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="Intrusion Detection System">
   <rationale>Firewall mediates access to the IDS</rationale>
 </asset_association>
 <asset_association environment="Day"  head_name="Router" head_nav="0" head_adornment="Association" head_nry="a" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="Corporate Network">
@@ -1013,7 +1051,7 @@ Ben promptly installs a keylogger onto this PC before logging out.</narrative>
 <asset_association environment="Day"  head_name="Router" head_nav="0" head_adornment="Association" head_nry="a" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="Telemetry Network">
   <rationale>Routers mediate access to the telemetry network.</rationale>
 </asset_association>
-<asset_association environment="Day"  head_name="ICT PC" head_nav="0" head_adornment="Association" head_nry="a" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="Telemetry Network"> 
+<asset_association environment="Day"  head_name="ICT PC" head_nav="0" head_adornment="Association" head_nry="a" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="Telemetry Network">
   <rationale>Some ICT PC applications interact with the telemetry network.</rationale>
 </asset_association>
 <asset_association environment="Day"  head_name="SCADA Workstation" head_nav="0" head_adornment="Association" head_nry="a" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="Works Network">
@@ -1024,60 +1062,6 @@ Ben promptly installs a keylogger onto this PC before logging out.</narrative>
 </asset_association>
 <asset_association environment="Day"  head_name="SCADA Workstation" head_nav="0" head_adornment="Association" head_nry="a" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="Enterprise SCADA Network">
   <rationale>SCADA workstations live in a particular Enterprise SCADA network.</rationale>
-</asset_association>
-<asset_association environment="Day"  head_name="ICT Application" head_nav="0" head_adornment="Association" head_nry="1..a" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="ICT credentials">
-  <rationale>It is assumed that telemetry technicians know the areas and patterns well enough to spot anomalies arising from spoofed telemetry </rationale>
-</asset_association>
-<asset_association environment="Day"  head_name="ICT PC" head_nav="0" head_adornment="Aggregation" head_nry="a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="STCS Application">
-  <rationale>Some STCS applications are installed to control devices on the telemetry network.</rationale>
-</asset_association>
-<asset_association environment="Day"  head_name="ICT PC" head_nav="0" head_adornment="Association" head_nry="a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="Modem">
-  <rationale>Some PCs have modems to allow remote access by engineers.</rationale>
-</asset_association>
-<asset_association environment="Day"  head_name="SCADA Workstation" head_nav="0" head_adornment="Association" head_nry="a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="Modem">
-  <rationale>Some workstations have models to allow remote access by engineers.</rationale>
-</asset_association>
-<asset_association environment="Day"  head_name="Laptop" head_nav="0" head_adornment="Aggregation" head_nry="1..a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="ICT Application">
-  <rationale>Corporate software is installed on technician laptops.</rationale>
-</asset_association>
-<asset_association environment="Day"  head_name="Laptop" head_nav="0" head_adornment="Aggregation" head_nry="1..a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="STCS Application">
-  <rationale>Control software is installed on technician laptops.</rationale>
-</asset_association>
-<asset_association environment="Day"  head_name="SCADA Workstation" head_nav="0" head_adornment="Aggregation" head_nry="1..a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="STCS Application">
-  <rationale>Control software is installed on SCADA workstations.</rationale>
-</asset_association>
-<asset_association environment="Day"  head_name="ICT cabinet" head_nav="0" head_adornment="Aggregation" head_nry="1" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="Router">
-  <rationale>Routers are stored in cabinets.</rationale>
-</asset_association>
-<asset_association environment="Day"  head_name="ICT cabinet" head_nav="0" head_adornment="Aggregation" head_nry="1" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="Firewall">
-  <rationale>Firewall appliances are stored in cabinets.</rationale>
-</asset_association>
-<asset_association environment="Day"  head_name="Works Network" head_nav="0" head_adornment="Association" head_nry="1" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="1" tail_name="PLC Event">
-  <rationale>Events are specific to works network.</rationale>
-</asset_association>
-<asset_association environment="Day"  head_name="Works Network" head_nav="0" head_adornment="Association" head_nry="1" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="1" tail_name="Suppress Event">
-  <rationale>Events are specific to works network.</rationale>
-</asset_association>
-<asset_association environment="Day"  head_name="Works Diary" head_nav="0" head_adornment="Aggregation" head_nry="1" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="Diary Entry">
-  <rationale>A specific diary has multiple entries.</rationale>
-</asset_association>
-<asset_association environment="Day"  head_name="PLC" head_nav="0" head_adornment="Aggregation" head_nry="1" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="PLC Event">
-  <rationale>Events are specific to PLCs.</rationale>
-</asset_association>
-<asset_association environment="Day"  head_name="ICT PC" head_nav="0" head_adornment="Aggregation" head_nry="a" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="ICT Application">
-  <rationale>Corporate applications are installed on corporate PCs.</rationale>
-</asset_association>
-<asset_association environment="Day"  head_name="Firewall" head_nav="0" head_adornment="Association" head_nry="1..a" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="Router">
-  <rationale>Network traffic flows through routers.</rationale>
-</asset_association>
-<asset_association environment="Night"  head_name="InfoPortal" head_nav="0" head_adornment="Association" head_nry="1" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="Corporate Network">
-  <rationale>Portal is on corporate network.</rationale>
-</asset_association>
-<asset_association environment="Night"  head_name="STCS Application" head_nav="0" head_adornment="Association" head_nry="1" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="STCS credentials">
-  <rationale>Credentials are used to use STCS applications.</rationale>
-</asset_association>
-<asset_association environment="Night"  head_name="Firewall" head_nav="0" head_adornment="Association" head_nry="1" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="Intrusion Detection System">
-  <rationale>Firewall mediates access to the IDS</rationale>
 </asset_association>
 <asset_association environment="Night"  head_name="Router" head_nav="0" head_adornment="Association" head_nry="a" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="Corporate Network">
   <rationale>Router mediates access to the telemetry network.</rationale>
@@ -1100,8 +1084,20 @@ Ben promptly installs a keylogger onto this PC before logging out.</narrative>
 <asset_association environment="Night"  head_name="SCADA Workstation" head_nav="0" head_adornment="Association" head_nry="a" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="Enterprise SCADA Network">
   <rationale>SCADA workstations live in a particular Enterprise SCADA network.</rationale>
 </asset_association>
+<asset_association environment="Day"  head_name="ICT Application" head_nav="0" head_adornment="Association" head_nry="1..a" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="ICT credentials">
+  <rationale>It is assumed that telemetry technicians know the areas and patterns well enough to spot anomalies arising from spoofed telemetry </rationale>
+</asset_association>
 <asset_association environment="Night"  head_name="ICT Application" head_nav="0" head_adornment="Association" head_nry="1..a" head_role="" tail_role="" tail_nry="1" tail_adornment="Association" tail_nav="0" tail_name="ICT credentials">
   <rationale>It is assumed that telemetry technicians know the areas and patterns well enough to spot anomalies arising from spoofed telemetry</rationale>
+</asset_association>
+<asset_association environment="Day"  head_name="ICT PC" head_nav="0" head_adornment="Aggregation" head_nry="a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="STCS Application">
+  <rationale>Some STCS applications are installed to control devices on the telemetry network.</rationale>
+</asset_association>
+<asset_association environment="Day"  head_name="ICT PC" head_nav="0" head_adornment="Association" head_nry="a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="Modem">
+  <rationale>Some PCs have modems to allow remote access by engineers.</rationale>
+</asset_association>
+<asset_association environment="Day"  head_name="SCADA Workstation" head_nav="0" head_adornment="Association" head_nry="a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="Modem">
+  <rationale>Some workstations have models to allow remote access by engineers.</rationale>
 </asset_association>
 <asset_association environment="Night"  head_name="ICT PC" head_nav="0" head_adornment="Aggregation" head_nry="a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="STCS Application">
   <rationale>Some STCS applications are installed to control devices on the telemetry network.</rationale>
@@ -1112,6 +1108,15 @@ Ben promptly installs a keylogger onto this PC before logging out.</narrative>
 <asset_association environment="Night"  head_name="SCADA Workstation" head_nav="0" head_adornment="Association" head_nry="a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="Modem">
   <rationale>Some workstations have models to allow remote access by engineers.</rationale>
 </asset_association>
+<asset_association environment="Day"  head_name="Laptop" head_nav="0" head_adornment="Aggregation" head_nry="1..a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="ICT Application">
+  <rationale>Corporate software is installed on technician laptops.</rationale>
+</asset_association>
+<asset_association environment="Day"  head_name="Laptop" head_nav="0" head_adornment="Aggregation" head_nry="1..a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="STCS Application">
+  <rationale>Control software is installed on technician laptops.</rationale>
+</asset_association>
+<asset_association environment="Day"  head_name="SCADA Workstation" head_nav="0" head_adornment="Aggregation" head_nry="1..a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="STCS Application">
+  <rationale>Control software is installed on SCADA workstations.</rationale>
+</asset_association>
 <asset_association environment="Night"  head_name="Laptop" head_nav="0" head_adornment="Aggregation" head_nry="1..a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="ICT Application">
   <rationale>Corporate software is installed on technician laptops.</rationale>
 </asset_association>
@@ -1120,6 +1125,21 @@ Ben promptly installs a keylogger onto this PC before logging out.</narrative>
 </asset_association>
 <asset_association environment="Night"  head_name="SCADA Workstation" head_nav="0" head_adornment="Aggregation" head_nry="1..a" head_role="" tail_role="" tail_nry="a" tail_adornment="Association" tail_nav="0" tail_name="STCS Application">
   <rationale>Control software is installed on SCADA workstations.</rationale>
+</asset_association>
+<asset_association environment="Day"  head_name="ICT cabinet" head_nav="0" head_adornment="Aggregation" head_nry="1" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="Router">
+  <rationale>Routers are stored in cabinets.</rationale>
+</asset_association>
+<asset_association environment="Day"  head_name="ICT cabinet" head_nav="0" head_adornment="Aggregation" head_nry="1" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="Firewall">
+  <rationale>Firewall appliances are stored in cabinets.</rationale>
+</asset_association>
+<asset_association environment="Day"  head_name="Works Network" head_nav="0" head_adornment="Association" head_nry="1" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="1" tail_name="PLC Event">
+  <rationale>Events are specific to works network.</rationale>
+</asset_association>
+<asset_association environment="Day"  head_name="Works Diary" head_nav="0" head_adornment="Aggregation" head_nry="1" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="Diary Entry">
+  <rationale>A specific diary has multiple entries.</rationale>
+</asset_association>
+<asset_association environment="Day"  head_name="PLC" head_nav="0" head_adornment="Aggregation" head_nry="1" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="PLC Event">
+  <rationale>Events are specific to PLCs.</rationale>
 </asset_association>
 <asset_association environment="Night"  head_name="ICT cabinet" head_nav="0" head_adornment="Aggregation" head_nry="1" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="Router">
   <rationale>Routers are stored in cabinets.</rationale>
@@ -1139,8 +1159,14 @@ Ben promptly installs a keylogger onto this PC before logging out.</narrative>
 <asset_association environment="Night"  head_name="PLC" head_nav="0" head_adornment="Aggregation" head_nry="1" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="PLC Event">
   <rationale>Events are specific to PLCs.</rationale>
 </asset_association>
+<asset_association environment="Day"  head_name="ICT PC" head_nav="0" head_adornment="Aggregation" head_nry="a" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="ICT Application">
+  <rationale>Corporate applications are installed on corporate PCs.</rationale>
+</asset_association>
 <asset_association environment="Night"  head_name="ICT PC" head_nav="0" head_adornment="Aggregation" head_nry="a" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="ICT Application">
   <rationale>Corporate applications are installed on corporate PCs.</rationale>
+</asset_association>
+<asset_association environment="Day"  head_name="Firewall" head_nav="0" head_adornment="Association" head_nry="1..a" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="Router">
+  <rationale>Network traffic flows through routers.</rationale>
 </asset_association>
 <asset_association environment="Night"  head_name="Firewall" head_nav="0" head_adornment="Association" head_nry="1..a" head_role="" tail_role="" tail_nry="1..a" tail_adornment="Association" tail_nav="0" tail_name="Router">
   <rationale>Network traffic flows through routers.</rationale>
@@ -1155,22 +1181,22 @@ Ben promptly installs a keylogger onto this PC before logging out.</narrative>
  During his working shifts (he works a 5 + 1 continental shift), Rick frequently checks readings on his SCADA workstation, takes water samples at various locations around the plant, and responds to alarms raised by the SCADA system; if necessary this involves investigating problems, and -- if no remedial tasks are possible -- calling someone out to investigate further.
 
  At the start of every shift, Rick checks AJS to see what work he is scheduled to carry out.  He usually updates AJS based on the work he carried out before the end of his shift.  Rick also maintains a paper work diary, which is updated after carrying out specific work or responding to problems.  This, together with the status white board, is also useful for explaining any on-going issues when handing over to the next shift.  </activities>
-  <attitudes>Rick isn't particularly concerned about people trying to hack into the SCADA system he uses.  "The only way the SCADA will get infected", Rick says, "is by an instrument tech plugging a virus infected laptop into it".
+  <attitudes>Rick isn't particularly concerned about people trying to hack into the SCADA system he uses.  &quot;The only way the SCADA will get infected&quot;, Rick says, &quot;is by an instrument tech plugging a virus infected laptop into it&quot;.
 
- Rick is aware of Information Security communiques on InfoPortal, but doesn't see how this is relevant to him.  "We don't have laptops", says Rick, "and we don't leave site, so we don't leave anything in cars".  Rick is, however, aware of Information Security controls.  Rick knows that logout policies keep intruders from getting access to his workstation (although he thinks the logout period is too short given his environment), and he knows he can only access certain pumping sites via the telemetry system.
+ Rick is aware of Information Security communiques on InfoPortal, but doesn't see how this is relevant to him.  &quot;We don't have laptops&quot;, says Rick, &quot;and we don't leave site, so we don't leave anything in cars&quot;.  Rick is, however, aware of Information Security controls.  Rick knows that logout policies keep intruders from getting access to his workstation (although he thinks the logout period is too short given his environment), and he knows he can only access certain pumping sites via the telemetry system.
 
- Although Rick can call an instrument tech for many problems, experience has taught him not to expect much from the ACME ICT support during a night shift.  "What's the point of calling up to say you can't login at night if all you get is a reference number", Rick complains, "that won't help me start my pumps now!"  Although Rick knows he can call out an instrument tech to help, he is also conscious that they are out most evenings, and might not appreciate a call-out for a corporate ICT problem.</attitudes>
-  <aptitudes>Rick has been a plant operator for over 10 years.  Although the exact procedures need to run his plant are documented in a works manual, he doesn't need to refer to it.  "I haven't read the works manual in years", Rick says.
+ Although Rick can call an instrument tech for many problems, experience has taught him not to expect much from the ACME ICT support during a night shift.  &quot;What's the point of calling up to say you can't login at night if all you get is a reference number&quot;, Rick complains, &quot;that won't help me start my pumps now!&quot;  Although Rick knows he can call out an instrument tech to help, he is also conscious that they are out most evenings, and might not appreciate a call-out for a corporate ICT problem.</attitudes>
+  <aptitudes>Rick has been a plant operator for over 10 years.  Although the exact procedures need to run his plant are documented in a works manual, he doesn't need to refer to it.  &quot;I haven't read the works manual in years&quot;, Rick says.
 
  This experience does not stay in Rick's head. When problems have occurred, he raises these during team meetings, and any lessons learned sometimes find their way into the SCADA system as new functionality.  Rick is aware of the new EnterpriseSCADA developments and possible improvements to the HMI and start-up procedure.  Although not fully in the loop about what is going on, he hopes that, like the current system, there will be productivity improvements without an adverse impact.
 
- Rick uses the SCADA's trend monitoring facilities as a indication of possible problems.  "If the trends freeze or flat-line", Rick says, "I need to go out and take a look at what's wrong".  Because problems occur daily, and he is often on his own, Rick can still control the plant using panel PCs at remote locations around the plant.</aptitudes>
+ Rick uses the SCADA's trend monitoring facilities as a indication of possible problems.  &quot;If the trends freeze or flat-line&quot;, Rick says, &quot;I need to go out and take a look at what's wrong&quot;.  Because problems occur daily, and he is often on his own, Rick can still control the plant using panel PCs at remote locations around the plant.</aptitudes>
   <motivations>Because the water quality can change over a matter of minutes, Rick's ethos is that you need to be ready for anything.  Because of this, checking certain parameters and pieces of kit is an important discipline, as is logging important events in the works diary and on the status board; these aid communication to other shift members, and the eventual piecing together of the elements of an event.
 
- Although information security doesn't phase Rick too much, personal security does.  Potentially facing off a scrap metal thief is a big worry for Rick. "The police don't respond to intruder alarms at a nearby pumping station any more due to false alarms", says Rick.  "Because of this, we've been told not to go out to these places on our own.   We have a lone-worker system when people call us when we get to a particular station, but what happens if we get problems on the way?"</motivations>
+ Although information security doesn't phase Rick too much, personal security does.  Potentially facing off a scrap metal thief is a big worry for Rick. &quot;The police don't respond to intruder alarms at a nearby pumping station any more due to false alarms&quot;, says Rick.  &quot;Because of this, we've been told not to go out to these places on our own.   We have a lone-worker system when people call us when we get to a particular station, but what happens if we get problems on the way?&quot;</motivations>
   <skills>Rick has a basic operating knowledge of Windows; enough to carry out his day-to-day routines, check his email, and navigate the main sections of InfoPortal.
 
- Rick isn't a power-user; he acknowledges that younger "whizz kids" are much more adept at using PCs than he is.  Consequently, he only uses a sub-set of the desktop icons currently on his desktop.  "I don't know what these other applications do", Rick says,"I've tried clicking on one and it just gives me a Data Protection Warning.  I guess this means I'm not authorised to use it."</skills>
+ Rick isn't a power-user; he acknowledges that younger &quot;whizz kids&quot; are much more adept at using PCs than he is.  Consequently, he only uses a sub-set of the desktop icons currently on his desktop.  &quot;I don't know what these other applications do&quot;, Rick says,&quot;I've tried clicking on one and it just gives me a Data Protection Warning.  I guess this means I'm not authorised to use it.&quot;</skills>
   <intrinsic>None</intrinsic>
   <contextual>None</contextual>
   <persona_environment name="Day" is_direct="FALSE" >
@@ -1856,8 +1882,8 @@ Due to the lack of ACME ICT support for PC hardware at his site, Barry has learn
   <definition>Event logging helps efficiency</definition>
   <grounds type="document" reference="Experience contributes to asset management decisions." />
   <grounds type="document" reference="Trouble-shooting driven by known task problems." />
-  <warrant type="document" reference="Checking certain things is a discipline" />
   <warrant type="document" reference="Site kept running at optimum efficiency" />
+  <warrant type="document" reference="Checking certain things is a discipline" />
 </persona_characteristic>
 <persona_characteristic persona="Rick" behavioural_variable="Motivations" modal_qualifier="Usually" >
   <definition>Feel unsafe challenging intruders</definition>
@@ -1920,8 +1946,8 @@ Rick returns back to the control room, and calls up one of the instrument techs 
   <task_environment name="Night" >
     <dependencies>Rick hears an audible alarm and notices that the trends have flatlined.</dependencies>
     <task_persona persona="Rick" duration="Hours_or_longer" frequency="Hourly_or_more" demands="Low" goal_conflict="Low" />
-    <task_concern asset="STCS Application" />
     <task_concern asset="Works Diary" />
+    <task_concern asset="STCS Application" />
     <narrative>Rick looks at the SCADA terminal and notices one of the inlet pumps appears to have failed.  Because Rick is the only person currently on site, Rick leaves the control room building, locking all the doors behind him, and walks to the building where the offending inlet pump lives.  Once he gets there, he doesn't see anything obviously wrong, so he checks the MCC to see if there has been some sort of trip.  Again, Rick can't find anything amiss with the electrics, so he concludes there must be some sort of communications problem.
 
 Rick returns back to the control room, and calls up the bunker at Dorchester.  He describes the problem, and asks for a stand-by instrument tech to be called out to take a look.  After Rick puts the phone down, he stops the alarm and notes his actions so far in the works diary.  After an hour, Rick glances up at the CCTV camera and notices a white transit van approaching, after stopping at the gate for a few moments, the electrified gate opens up and the van drives through.  This van is driven by Barry, an instrument tech who is a frequent visitor to the site.  After a few minutes, Rick hears the buzzer for the main entrance to the building, after hearing Barry's voice, Rick buzzes Barry in.  When Barry gets to the control room and exchanges a few pleasantries, Rick explains the problem to Barry, who heads down to the inlet pump building.
@@ -2770,6 +2796,14 @@ Standard 7.11(vvv)</issue>
     </probability>
   </obstacle_environment>
 </obstacle>
+<obstacle name="Unavailable software repository" originator="CAIRIS" >
+  <obstacle_environment name="Day" category="Availability_Threat" >
+    <definition>Active Directory is unavailable.</definition>
+    <probability value="0" >
+      <rationale>None</rationale>
+    </probability>
+  </obstacle_environment>
+</obstacle>
 <requirement name="Active Directory wifi control" reference="Corporate Network" reference_type="asset" label="1" type="Functional" priority="1" >
   <description>Access control to wifi devices shall be managed through Active Directory.</description>
   <rationale>Active Directory enforces access control for ACME corporate devices.</rationale>
@@ -2836,19 +2870,19 @@ Standard 7.11(vvv)</issue>
   <fit_criterion>None</fit_criterion>
   <originator>Standard 7.14(qqqq)</originator>
 </requirement>
-<requirement name="Administration access warrant" reference="ICT Credentials" reference_type="asset" label="1" type="Functional" priority="1" >
+<requirement name="Administration access warrant" reference="ICT credentials" reference_type="asset" label="1" type="Functional" priority="1" >
   <description>Administration level privileges shall be approved using the Code of Conduct (CoCo) forms on InfoPortal.</description>
   <rationale>None</rationale>
   <fit_criterion>Group access for administrators is monitored manually, and each instance of access is logged.</fit_criterion>
   <originator>Standard 7.8(bbb)</originator>
 </requirement>
-<requirement name="Pay number sharing" reference="ICT Credentials" reference_type="asset" label="2" type="Security" priority="1">
+<requirement name="Pay number sharing" reference="ICT credentials" reference_type="asset" label="2" type="Security" priority="1" >
   <description>Pay numbers shall not be shared with unauthorised personnel.</description>
   <rationale>None</rationale>
   <fit_criterion>None</fit_criterion>
   <originator>Anon</originator>
 </requirement>
-<requirement name="Credentials non-disclosure" reference="ICT Credentials" reference_type="asset" label="3" type="Security" priority="1">
+<requirement name="Credentials non-disclosure" reference="ICT credentials" reference_type="asset" label="3" type="Security" priority="1" >
   <description>Access credentials to SCADA, Telemetry, and Control Systems shall not be disclosed.</description>
   <rationale>None</rationale>
   <fit_criterion>TBC</fit_criterion>
@@ -2921,7 +2955,7 @@ Standard 7.11(vvv)</issue>
     <preconditions>Software repository online.  Alarm mechanisms online.  Instrument technician authenticated with outstation.  Instrument technician authenticated with telemetry network.  Modified software on laptop and outstation.</preconditions>
     <flow>
       <step number="1" description="Instrument Technician requests verification of software change" >
-        <exception name="No changes" type="None">
+        <exception name="No changes" type="None" value="None" category="None" >
           <definition>No software has been changed.</definition>
         </exception>
       </step>
@@ -3175,9 +3209,6 @@ Standard 7.11(vvv)</issue>
 <goal_association environment="Day"  goal_name="Access Control" goal_dim="goal" ref_type="and" subgoal_name="TMS access control" subgoal_dim="goal" alternative_id="0" >
   <rationale></rationale>
 </goal_association>
-<goal_association environment="Day"  goal_name="Access Control" goal_dim="goal" ref_type="and" subgoal_name="Credentials non-disclosure" subgoal_dim="requirement" alternative_id="0" >
-  <rationale></rationale>
-</goal_association>
 <goal_association environment="Day"  goal_name="Secure Operating Systems" goal_dim="goal" ref_type="and" subgoal_name="Standard build" subgoal_dim="goal" alternative_id="0" >
   <rationale></rationale>
 </goal_association>
@@ -3308,6 +3339,9 @@ Standard 7.11(vvv)</issue>
   <rationale></rationale>
 </goal_association>
 <goal_association environment="Night"  goal_name="DetectWar-dialing" goal_dim="goal" ref_type="and" subgoal_name="Anomalous credentials reset" subgoal_dim="goal" alternative_id="0" >
+  <rationale></rationale>
+</goal_association>
+<goal_association environment="Day"  goal_name="Access Control" goal_dim="goal" ref_type="and" subgoal_name="Credentials non-disclosure" subgoal_dim="requirement" alternative_id="0" >
   <rationale></rationale>
 </goal_association>
 <goal_association environment="Day"  goal_name="Active Directory Network Services" goal_dim="goal" ref_type="and" subgoal_name="Active Directory wifi control" subgoal_dim="requirement" alternative_id="0" >
@@ -3514,6 +3548,9 @@ Standard 7.11(vvv)</issue>
 <goal_association environment="Night"  goal_name="Anomalous credentials reset" goal_dim="goal" ref_type="responsible" subgoal_name="Service Desk" subgoal_dim="role" alternative_id="0" >
   <rationale></rationale>
 </goal_association>
+<goal_association environment="Day"  goal_name="Active Directory software deployment" goal_dim="goal" ref_type="obstruct" subgoal_name="Unavailable software repository" subgoal_dim="obstacle" alternative_id="0" >
+  <rationale>Obstructs use case Modify Telemetry Software</rationale>
+</goal_association>
 <goal_association environment="Day"  goal_name="Authorised removable media" goal_dim="goal" ref_type="obstruct" subgoal_name="Desktop installation" subgoal_dim="obstacle" alternative_id="0" >
   <rationale>None</rationale>
 </goal_association>
@@ -3536,9 +3573,6 @@ Standard 7.11(vvv)</issue>
   <rationale>None</rationale>
 </goal_association>
 <goal_association environment="Day"  goal_name="Vendor passwords" goal_dim="goal" ref_type="obstruct" subgoal_name="Vendor passwords unchanged" subgoal_dim="obstacle" alternative_id="0" >
-  <rationale>None</rationale>
-</goal_association>
-<goal_association environment="Day"  goal_name="Credentials non-disclosure" goal_dim="requirement" ref_type="obstruct" subgoal_name="Ubiquitous identity data" subgoal_dim="obstacle" alternative_id="0" >
   <rationale>None</rationale>
 </goal_association>
 <goal_association environment="Day"  goal_name="Surplus equipment" goal_dim="obstacle" ref_type="and" subgoal_name="Accessible equipment" subgoal_dim="obstacle" alternative_id="0" >
@@ -3575,6 +3609,9 @@ Standard 7.11(vvv)</issue>
   <rationale></rationale>
 </goal_association>
 <goal_association environment="Day"  goal_name="Malware application" goal_dim="obstacle" ref_type="or" subgoal_name="DLL preloading" subgoal_dim="obstacle" alternative_id="0" >
+  <rationale>None</rationale>
+</goal_association>
+<goal_association environment="Day"  goal_name="Credentials non-disclosure" goal_dim="requirement" ref_type="obstruct" subgoal_name="Ubiquitous identity data" subgoal_dim="obstacle" alternative_id="0" >
   <rationale>None</rationale>
 </goal_association>
 <goal_association environment="Day"  goal_name="Malicious traffic alert" goal_dim="requirement" ref_type="obstruct" subgoal_name="Undetected malicious traffic" subgoal_dim="obstacle" alternative_id="0" >
@@ -3615,35 +3652,47 @@ Standard 7.11(vvv)</issue>
 </dependency>
 </associations>
 
+<synopses>
+</synopses>
+
+<misusability>
+</misusability>
+
 <dataflows>
-  <dataflow name="failure event" environment="Day" from_name="PLC" from_type="entity" to_name="Raise Alarm" to_type="process">
+  <dataflow name="failure event" type="Information" environment="Day" from_name="PLC" from_type="entity" to_name="Raise Alarm" to_type="process">
+  <tag name="testTag" />
     <dataflow_asset name="PLC Event" />
   </dataflow>
-  <dataflow name="manual alarm override" environment="Day" from_name="Plant Staff" from_type="entity" to_name="Suppress Alarm" to_type="process">
+  <dataflow name="manual alarm override" type="Information" environment="Day" from_name="Plant Staff" from_type="entity" to_name="Suppress Alarm" to_type="process">
     <dataflow_asset name="Suppress Event" />
   </dataflow>
-  <dataflow name="anomaly notes" environment="Day" from_name="Plant Staff" from_type="entity" to_name="Log Event" to_type="process">
+  <dataflow name="anomaly notes" type="Information" environment="Day" from_name="Plant Staff" from_type="entity" to_name="Log Event" to_type="process">
     <dataflow_asset name="Diary Entry" />
   </dataflow>
-  <dataflow name="alarm notification" environment="Day" from_name="Raise Alarm" from_type="process" to_name="SCADA Workstation" to_type="datastore">
+  <dataflow name="alarm notification" type="Information" environment="Day" from_name="Raise Alarm" from_type="process" to_name="SCADA Workstation" to_type="datastore">
     <dataflow_asset name="PLC Event" />
   </dataflow>
-  <dataflow name="diary entry" environment="Day" from_name="Log Event" from_type="process" to_name="Works Diary" to_type="datastore">
+  <dataflow name="diary entry" type="Information" environment="Day" from_name="Log Event" from_type="process" to_name="Works Diary" to_type="datastore">
     <dataflow_asset name="Diary Entry" />
   </dataflow>
-  <dataflow name="alarm override" environment="Day" from_name="Suppress Alarm" from_type="process" to_name="SCADA Workstation" to_type="datastore">
+  <dataflow name="alarm override" type="Information" environment="Day" from_name="Suppress Alarm" from_type="process" to_name="SCADA Workstation" to_type="datastore">
     <dataflow_asset name="Suppress Event" />
   </dataflow>
-  <trust_boundary name="Operations">
+  <trust_boundary name="Operations" type="General" >
     <description>All processes and objects associated with plant operations is considered trustworthy.</description>
     <trust_boundary_environment name="Day">
       <trust_boundary_component name="Raise Alarm" type="process" />
       <trust_boundary_component name="Log Event" type="process" />
       <trust_boundary_component name="Suppress Alarm" type="process" />
-      <trust_boundary_component name="SCADA Workstation" type="datastore" />
       <trust_boundary_component name="Works Diary" type="datastore" />
+      <trust_boundary_component name="SCADA Workstation" type="datastore" />
     </trust_boundary_environment>
   </trust_boundary>
 </dataflows>
+
+
+
+<stories>
+</stories>
 
 </cairis_model>

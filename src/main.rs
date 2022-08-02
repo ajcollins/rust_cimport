@@ -28,6 +28,13 @@ fn main() {
     println!("{}",ps);
   }
   
+  println!("ENVIRONMENTS");
+  if let Some(envs) = &mp.state.environments {
+     for env in envs.iter().enumerate() {
+      println!("{}",env.1);
+    }
+  }
+
   println!("ROLES");
   if let Some(roles) = &mp.state.roles {
     for role in roles.iter().enumerate() {
@@ -40,6 +47,6 @@ fn main() {
     for asset in assets.iter().enumerate() {
       println!("{}",asset.1);
     } 
-
   }
+  
 }

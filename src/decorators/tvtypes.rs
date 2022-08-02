@@ -24,7 +24,8 @@ impl ParseDecorator for TVTypesHandler {
   fn parse_start_element(&mut self, el: &StartElement) {
     if el.name == "vulnerability_type" || el.name == "threat_type" {
       attributes_to_dict(&mut self.attr_dict, &el,HashSet::from(["name"]));
-      self.tv_types.push( ValueType::new(self.attr_dict.get("name").unwrap(),&"".to_string()));
+      let vt_name = el.name.to_string();
+      self.tv_types.push( ValueType::new(self.attr_dict.get("name").unwrap(),&"".to_string(),&vt_name));
     }
     else if el.name == "description" {
       self.in_description = true;

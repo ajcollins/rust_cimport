@@ -1,6 +1,6 @@
 use std::{fs::File};
 use xml_oxide::{sax::parser::Parser, sax::Event};
-use crate::decorators::{parsedecorator::ParseDecorator,tvtypes::TVTypesHandler,domainvalues::DomainValuesHandler, projectsettings::ProjectSettingsHandler, riskanalysis::RiskAnalysisHandler, savedstate::SavedState};
+use crate::decorators::{parsedecorator::ParseDecorator,tvtypes::TVTypesHandler,domainvalues::DomainValuesHandler, cairis::CairisHandler, riskanalysis::RiskAnalysisHandler, savedstate::SavedState};
 
 pub struct ModelParser {
   pub state : SavedState,
@@ -38,7 +38,7 @@ impl ModelParser {
                 self.decorator = Some(Box::new(DomainValuesHandler::new()));
               }
               else if el.name == "cairis" {
-                self.decorator = Some(Box::new(ProjectSettingsHandler::new()));
+                self.decorator = Some(Box::new(CairisHandler::new()));
               }
               else if el.name == "riskanalysis" {
                 self.decorator = Some(Box::new(RiskAnalysisHandler::new()));

@@ -119,14 +119,14 @@ impl ParseDecorator for RiskAnalysisHandler {
     }
   }
   
-  fn parse_end_element(&mut self, _el: &EndElement){
-    if self.in_role == true {
+  fn parse_end_element(&mut self, el: &EndElement){
+    if el.name == "role" {
       self.in_role = false;
     }
-    else if self.in_asset == true {
+    else if el.name == "asset" {
       self.in_asset = false;
     }
-    else if self.in_security_property == true {
+    else if el.name == "security_property" {
       self.in_security_property = false;
     }
   }
