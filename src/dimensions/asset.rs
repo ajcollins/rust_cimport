@@ -118,14 +118,12 @@ impl Asset {
 
 impl fmt::Display for Asset {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    let mut tags = "".to_string();
-    for tag in &self.tags {
-      tags.push_str(&tag.to_string());
-    }
-    let mut props = "".to_string();
+    let tags = &self.tags.iter().map(|t| t.name.clone()).collect::<Vec<String>>().join(",");
+    let props = &self.environment_properties.iter().map(|pt| pt.1.to_string()).collect::<Vec<String>>().join(",");
+/*     let mut props = "".to_string();
     for pt in &self.environment_properties {
       props.push_str(&pt.1.to_string());
-    }
+    } */
     write!(f,"Name: {}, Short code: {}, Type: {}, Tags: {}, Description: {}, Significance: {}, Properties: {}",self.name,self.short_code,self.asset_type,tags,self.description,self.significance,props)
   }
 }
