@@ -78,6 +78,11 @@ impl ParseDecorator for RiskAnalysisHandler {
         let last_idx = self.assets.len() - 1;
         self.assets[last_idx].tags.push(Tag::new(&self.attr_dict.get("name").unwrap().clone()));   
       }
+      else if self.in_vulnerability == true {
+        let last_idx = self.vulnerabilities.len() - 1;
+        self.vulnerabilities[last_idx].tags.push(Tag::new(&self.attr_dict.get("name").unwrap().clone()));   
+
+      }
     }
     else if el.name == "asset" {
       attributes_to_dict(&mut self.attr_dict,&el,HashSet::from(["name","short_code","type","is_critical"]));

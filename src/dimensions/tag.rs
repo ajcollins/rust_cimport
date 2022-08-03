@@ -2,7 +2,7 @@ use std::fmt;
 
 #[derive(Clone,PartialEq)]
 pub struct Tag {
-  name : String
+  pub name : String
 }
 
 impl Tag {

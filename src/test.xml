@@ -639,6 +639,7 @@
 </asset>
 <vulnerability name="Incompatible security controls" type="Configuration">
   <description>Security software is incompatible with SCADA, Telemetry, or Control System application</description>
+  <tag name="testTag" />
   <vulnerability_environment name="Day" severity="Marginal">
     <vulnerable_asset name="SCADA Workstation" />
     <vulnerable_asset name="Laptop" />
