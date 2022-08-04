@@ -12,7 +12,7 @@ fn main() {
   let model_file = &args[1];
   let mut mp = ModelParser::new();
   mp.parse(model_file);
- 
+  
   println!("THREAT/VULNERABILITY TYPES");
   if let Some(tvs) = &mp.state.tv_types {
     for tv in tvs.iter().enumerate() {
@@ -57,4 +57,10 @@ fn main() {
     } 
   }
 
+  println!("ATTACKERS");
+  if let Some(attackers) = &mp.state.attackers {
+    for attacker in attackers.iter().enumerate() {
+      println!("{}",attacker.1);
+    } 
+  }
 }

@@ -3,6 +3,7 @@ use xml_oxide::{sax::StartElement,sax::EndElement};
 use crate::dimensions::role::Role;
 use crate::dimensions::asset::Asset;
 use crate::dimensions::vulnerability::{Vulnerability, VulnerabilityEnvironment};
+use crate::dimensions::attacker::{Attacker, AttackerEnvironment};
 use crate::dimensions::tag::Tag;
 use crate::dimensions::asset::AssetEnvironmentProperties;
 use crate::decorators::helpers::attributes_to_dict;
@@ -18,9 +19,11 @@ pub struct RiskAnalysisHandler {
   in_critical_rationale : bool,
   in_rationale : bool,
   in_vulnerability : bool,
+  in_attacker : bool,
   roles : Vec<Role>,
   assets : Vec<Asset>,
   vulnerabilities : Vec<Vulnerability>,
+  attackers : Vec<Attacker>,
   attr_dict : HashMap<String,String>
 }
 
@@ -35,9 +38,11 @@ impl RiskAnalysisHandler {
       in_critical_rationale : false,
       in_rationale : false,
       in_vulnerability : false,
+      in_attacker : false,
       roles : Vec::<Role>::new(),
       assets : Vec::<Asset>::new(),
       vulnerabilities : Vec::<Vulnerability>::new(),
+      attackers : Vec::<Attacker>::new(),
       attr_dict : HashMap::<String,String>::new()
     }
   }
@@ -81,7 +86,10 @@ impl ParseDecorator for RiskAnalysisHandler {
       else if self.in_vulnerability == true {
         let last_idx = self.vulnerabilities.len() - 1;
         self.vulnerabilities[last_idx].tags.push(Tag::new(&self.attr_dict.get("name").unwrap().clone()));   
-
+      }
+      else if self.in_attacker == true {
+        let last_idx = self.attackers.len() - 1;
+        self.attackers[last_idx].tags.push(Tag::new(&self.attr_dict.get("name").unwrap().clone()));   
       }
     }
     else if el.name == "asset" {
@@ -116,6 +124,31 @@ impl ParseDecorator for RiskAnalysisHandler {
       let envs = &mut self.vulnerabilities[last_vul_idx].environments;
       let last_env_idx = envs.len();
       envs[last_env_idx - 1].assets.push(self.attr_dict.get("name").unwrap().clone());
+    }
+    else if el.name == "attacker" {
+      self.in_attacker = true;
+      attributes_to_dict(&mut self.attr_dict,&el,HashSet::from(["name","image"]));
+      self.attackers.push (Attacker::new(
+        self.attr_dict.get("name").unwrap(),
+        self.attr_dict.get("image").unwrap())
+      );
+    }
+    else if el.name == "attacker_environment" {
+      attributes_to_dict(&mut self.attr_dict,&el,HashSet::from(["name"]));
+      let last_idx = self.attackers.len() - 1;
+      self.attackers[last_idx].environments.push(AttackerEnvironment::new(self.attr_dict.get("name").unwrap()));
+    }
+    else if el.name == "attacker_role" || el.name == "capability" || el.name == "motivation" {
+      attributes_to_dict(&mut self.attr_dict,&el,HashSet::from(["name"]));
+      let last_idx = self.attackers.len() - 1;
+      let envs = &mut self.attackers[last_idx].environments;
+      let last_env_idx = envs.len() - 1;
+      match el.name {
+        "attacker_role" => {envs[last_env_idx].roles.push(self.attr_dict.get("name").unwrap().clone());},
+        "capability" => {envs[last_env_idx].capabilities.push(self.attr_dict.get("name").unwrap().clone());},
+        "motivation" => {envs[last_env_idx].motivations.push(self.attr_dict.get("name").unwrap().clone());},
+        _ => {}
+      }
     }
   }
   fn parse_characters(&mut self, data : &str) {
@@ -152,6 +185,11 @@ impl ParseDecorator for RiskAnalysisHandler {
       self.vulnerabilities[last_idx].description = data.to_string();   
       self.in_description = false;
     }
+    else if self.in_attacker == true && self.in_description == true {
+      let last_idx = self.attackers.len() - 1;
+      self.attackers[last_idx].description = data.to_string();   
+      self.in_description = false;
+    }
   }
   
   fn parse_end_element(&mut self, el: &EndElement){
@@ -167,11 +205,15 @@ impl ParseDecorator for RiskAnalysisHandler {
     else if el.name == "vulnerability" {
       self.in_vulnerability = false;
     }
+    else if el.name == "attacker" {
+      self.in_attacker = false;
+    }
   }
 
   fn save_state(&self, ss: &mut SavedState){
     ss.roles = Some(Box::new(self.roles.clone()));
     ss.assets = Some(Box::new(self.assets.clone()));
     ss.vulnerabilities = Some(Box::new(self.vulnerabilities.clone()));
+    ss.attackers = Some(Box::new(self.attackers.clone()));
   }
 }

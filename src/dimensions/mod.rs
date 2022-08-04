@@ -6,3 +6,4 @@ pub mod asset;
 pub mod tag;
 pub mod environment;
 pub mod vulnerability;
+pub mod attacker;
