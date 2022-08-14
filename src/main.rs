@@ -19,14 +19,6 @@ struct Cli {
 
 fn main() {
 
-/*   let args : Vec<String> = env::args().collect();
-  let model_file = &args[1];
-  let host = "192.168.148.136".to_string();
-  let port = "3306".to_string();
-  let usr = "cairis_test".to_string();
-  let passwd = "cairis_test".to_string();
-  let dbname = "cairis_test_default".to_string();*/
-
   let cli = Cli::parse();
 
   let mut mp = ModelParser::new();
