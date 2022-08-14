@@ -2,17 +2,18 @@ use std::fmt;
 
 #[derive(Clone,PartialEq)]
 pub struct ValueType {
-  name : String,
+  pub id : i128,
+  pub name : String,
   pub description: String,
-  vt_type : String,
-  score : u32,
-  rationale : String,
+  pub vt_type : String,
+  pub score : i128,
+  pub rationale : String,
   pub environment : String
 }
 
 impl ValueType {
   pub fn new(vt_name : &String, vt_desc : &String,v_t : &String) -> ValueType {
-    ValueType{ name : vt_name.clone(), description: vt_desc.clone(), vt_type : v_t.clone(), score : 0, rationale : "".to_string(), environment : "".to_string()}
+    ValueType{ id: -1, name : vt_name.clone(), description: vt_desc.clone(), vt_type : v_t.clone(), score : 0, rationale : "".to_string(), environment : "".to_string()}
   }
 }
 

@@ -1,66 +1,51 @@
-use std::env;
 mod model_parser;
 mod dimensions;
 mod decorators;
-
+mod db;
 use model_parser::ModelParser;
+use db::mysql::MySQLDatabaseProxy;
+use clap::Parser;
 
+#[derive(Parser)]
+#[clap(author,version,about,long_about = None)]
+struct Cli {
+  host : String,
+  port : String,
+  user : String,
+  passwd : String,
+  db_name : String,
+  model_file : String
+}
 
 fn main() {
 
-  let args : Vec<String> = env::args().collect();
+/*   let args : Vec<String> = env::args().collect();
   let model_file = &args[1];
+  let host = "192.168.148.136".to_string();
+  let port = "3306".to_string();
+  let usr = "cairis_test".to_string();
+  let passwd = "cairis_test".to_string();
+  let dbname = "cairis_test_default".to_string();*/
+
+  let cli = Cli::parse();
+
   let mut mp = ModelParser::new();
-  mp.parse(model_file);
+  mp.parse(&cli.model_file);
   
+  let mut proxy = MySQLDatabaseProxy::new(&cli.host,&cli.port, &cli.user, &cli.passwd, &cli.db_name);
   println!("THREAT/VULNERABILITY TYPES");
   if let Some(tvs) = &mp.state.tv_types {
-    for tv in tvs.iter().enumerate() {
-      println!("{}",tv.1);
+    for vt in tvs.iter().enumerate() {
+      proxy.add_value_type(vt.1);
     }
-  }
-  println!("DOMAIN VALUES");
-  if let Some(dvs) = &mp.state.dv_types {
-    for dv in dvs.iter().enumerate() {
-      println!("{}",dv.1);
-    }
-  }
-  println!("PROJECT SETTINGS");
-  if let Some(ps) = &mp.state.p_settings {
-    println!("{}",ps);
   }
   
-  println!("ENVIRONMENTS");
-  if let Some(envs) = &mp.state.environments {
-     for env in envs.iter().enumerate() {
-      println!("{}",env.1);
-    }
+  for vt in proxy.get_value_types(&"vulnerability_type".to_string(), &"".to_string()) {
+    println!("{}",vt);
   }
 
-  println!("ROLES");
-  if let Some(roles) = &mp.state.roles {
-    for role in roles.iter().enumerate() {
-      println!("{}",role.1);
-    }
+  for vt in proxy.get_value_types(&"threat_type".to_string(), &"".to_string()) {
+    println!("{}",vt);
   }
 
-  println!("ASSETS");
-  if let Some(assets) = &mp.state.assets {
-    for asset in assets.iter().enumerate() {
-      println!("{}",asset.1);
-    } 
-  }
-  println!("VULNERABILITIES");
-  if let Some(vuls) = &mp.state.vulnerabilities {
-    for vul in vuls.iter().enumerate() {
-      println!("{}",vul.1);
-    } 
-  }
-
-  println!("ATTACKERS");
-  if let Some(attackers) = &mp.state.attackers {
-    for attacker in attackers.iter().enumerate() {
-      println!("{}",attacker.1);
-    } 
-  }
 }
