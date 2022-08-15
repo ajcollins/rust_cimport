@@ -24,7 +24,14 @@ impl ParseDecorator for DomainValuesHandler {
   fn parse_start_element(&mut self, el: &StartElement) {
     if el.name == "threat_value" || el.name == "risk_value" || el.name == "countermeasure_value" || el.name == "severity_value" || el.name == "likelihood_value" {
       attributes_to_dict(&mut self.attr_dict, &el,HashSet::from(["name"]));
-      let vt_name = el.name.to_string();
+      let vt_name = match el.name {
+        "capability_value" => "capability".to_string(),
+        "motivation_value" => "motivation".to_string(),
+        "risk_value" => "risk_class".to_string(),
+        "severity_value" => "severity".to_string(),
+        "likelihood_value" => "likelihood".to_string(),
+        &_ => el.name.to_string()
+      };
       self.dv_types.push( ValueType::new(self.attr_dict.get("name").unwrap(),&"".to_string(),&vt_name));
     }
     else if el.name == "description" {

@@ -32,6 +32,13 @@ fn main() {
     }
   }
   
+  println!("DOMAIN VALUES");
+  if let Some(dvs) = &mp.state.dv_types {
+    for vt in dvs.iter().enumerate() {
+      proxy.add_value_type(vt.1);
+    }
+  }
+
   for vt in proxy.get_value_types(&"vulnerability_type".to_string(), &"".to_string()) {
     println!("{}",vt);
   }
@@ -39,5 +46,22 @@ fn main() {
   for vt in proxy.get_value_types(&"threat_type".to_string(), &"".to_string()) {
     println!("{}",vt);
   }
+
+  for vt in proxy.get_value_types(&"threat_value".to_string(), &"".to_string()) {
+    println!("{}",vt);
+  }
+  for vt in proxy.get_value_types(&"risk_class".to_string(), &"".to_string()) {
+    println!("{}",vt);
+  }
+  for vt in proxy.get_value_types(&"countermeasure_value".to_string(), &"".to_string()) {
+    println!("{}",vt);
+  } 
+  for vt in proxy.get_value_types(&"severity".to_string(), &"".to_string()) {
+    println!("{}",vt);
+  }  
+  for vt in proxy.get_value_types(&"likelihood".to_string(), &"".to_string()) {
+    println!("{}",vt);
+  } 
+
 
 }

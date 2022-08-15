@@ -31,12 +31,8 @@ impl MySQLDatabaseProxy {
   pub fn new_id(&mut self) -> i128 {
     let res = self.conn.query_map("call newId()",|nid| nid);
     match res {
-      Result::Ok(r) => {
-        return r[0]; 
-      },
-      Result::Err(err) => {
-        panic!("{:?}",err);
-      }
+      Ok(r) => { return r[0];}
+      Err(err) => { panic!("{:?}",err);}
     };
   }
 
@@ -50,6 +46,10 @@ impl MySQLDatabaseProxy {
       "score" => &vt.score,
       "rat" => &vt.rationale
     });
+    match res {
+      Ok(_r) => {},
+      Err(err) => {println!("{:?}",err);}
+    }
   }
   
   pub fn get_value_types(&mut self, dim_name : &String, env_name : &String) -> Vec<ValueType> {
