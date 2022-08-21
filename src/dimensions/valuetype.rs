@@ -1,6 +1,5 @@
-use crate::db::mysql::MySQLDatabaseProxy;
-use crate::db::mysql::initialise_db;
 use std::fmt;
+use crate::db::mysql::initialise_db;
 
 #[derive(Clone,PartialEq)]
 pub struct ValueType {
@@ -27,7 +26,6 @@ impl fmt::Display for ValueType {
 
 #[test]
 fn test_new_value_type() {
-  let mut p = initialise_db();
   let vt = ValueType::new(&"AVT".to_string(),&"XXX".to_string(),&"vulnerability_type".to_string());
   assert_eq!(vt.name,"AVT".to_string());
   assert_eq!(vt.description,"XXX".to_string());

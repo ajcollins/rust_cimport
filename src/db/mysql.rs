@@ -5,7 +5,6 @@ use crate::dimensions::projectsettings::ProjectSettings;
 use dotenv;
 use std::process::Command;
 use std::env;
-use std::io::{self, Write};
 
 pub struct MySQLDatabaseProxy {
   conn : PooledConn
@@ -217,4 +216,10 @@ pub fn initialise_db() -> MySQLDatabaseProxy {
   Command::new(&env::var("RESET_SERVER").unwrap().as_str()).output().expect("Failed to initialise db");
   let proxy = MySQLDatabaseProxy::new(&env::var("DB_HOST").unwrap(),&env::var("DB_PORT").unwrap(), &env::var("DB_USER").unwrap(), &env::var("DB_PASSWD").unwrap(), &env::var("TEST_DB").unwrap());
   return proxy;
+}
+
+#[test]
+pub fn test_database_ping() {
+  let mut p = initialise_db();
+  assert_eq!(p.ok(),true);
 }
