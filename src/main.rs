@@ -42,14 +42,10 @@ fn main() {
   for vt in proxy.get_value_types(&"vulnerability_type".to_string(), &"".to_string()) {
     println!("{}",vt);
   }
-
   for vt in proxy.get_value_types(&"threat_type".to_string(), &"".to_string()) {
     println!("{}",vt);
   }
 
-  for vt in proxy.get_value_types(&"threat_value".to_string(), &"".to_string()) {
-    println!("{}",vt);
-  }
   for vt in proxy.get_value_types(&"risk_class".to_string(), &"".to_string()) {
     println!("{}",vt);
   }
@@ -62,6 +58,13 @@ fn main() {
   for vt in proxy.get_value_types(&"likelihood".to_string(), &"".to_string()) {
     println!("{}",vt);
   } 
+
+  println!("PROJECT SETTINGS");
+  if let Some(ps) = &mp.state.p_settings {
+    proxy.update_project_settings(ps);
+    let ps2 = proxy.get_project_settings();
+    println!("{}",ps2);
+  }
 
 
 }
