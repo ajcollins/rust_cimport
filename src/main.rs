@@ -1,9 +1,7 @@
 mod model_parser;
-mod dimensions;
 mod decorators;
-mod db;
 use model_parser::ModelParser;
-use db::mysql::MySQLDatabaseProxy;
+use cairis_core::db::mysql::MySQLDatabaseProxy;
 use clap::Parser;
 
 #[derive(Parser)]

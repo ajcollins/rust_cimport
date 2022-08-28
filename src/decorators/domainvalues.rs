@@ -1,6 +1,6 @@
 use std::{collections::HashMap,collections::HashSet};
 use xml_oxide::sax::StartElement;
-use crate::dimensions::valuetype::ValueType;
+use cairis_core::dimensions::valuetype::ValueType;
 use crate::decorators::helpers::attributes_to_dict;
 use crate::decorators::parsedecorator::ParseDecorator;
 use crate::decorators::savedstate::SavedState;

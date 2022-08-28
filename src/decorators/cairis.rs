@@ -1,7 +1,7 @@
 use std::{collections::HashMap,collections::HashSet};
 use xml_oxide::{sax::StartElement,sax::EndElement};
-use crate::dimensions::projectsettings::ProjectSettings;
-use crate::dimensions::environment::Environment;
+use cairis_core::dimensions::projectsettings::ProjectSettings;
+use cairis_core::dimensions::environment::Environment;
 use crate::decorators::helpers::attributes_to_dict;
 use crate::decorators::parsedecorator::ParseDecorator;
 use crate::decorators::savedstate::SavedState;

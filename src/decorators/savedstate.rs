@@ -1,10 +1,10 @@
-use crate::dimensions::valuetype::ValueType;
-use crate::dimensions::role::Role;
-use crate::dimensions::asset::Asset;
-use crate::dimensions::vulnerability::Vulnerability;
-use crate::dimensions::attacker::Attacker;
-use crate::dimensions::projectsettings::ProjectSettings;
-use crate::dimensions::environment::Environment;
+use cairis_core::dimensions::valuetype::ValueType;
+use cairis_core::dimensions::role::Role;
+use cairis_core::dimensions::asset::Asset;
+use cairis_core::dimensions::vulnerability::Vulnerability;
+use cairis_core::dimensions::attacker::Attacker;
+use cairis_core::dimensions::projectsettings::ProjectSettings;
+use cairis_core::dimensions::environment::Environment;
 
 pub struct SavedState {
   pub tv_types : Option<Box<Vec<ValueType>>>,

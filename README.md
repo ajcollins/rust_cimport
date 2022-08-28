@@ -2,6 +2,13 @@
 
 This is a work-in-progress port of cimport to Rust: a pilot exercise in porting the CAIRIS server side code to the language.
 
+## Changes to Cargo.toml
+
+Change the path to cairis_core to wherever you've clone the [cairis_core](https://github.com/failys/cairis_core) repo.
+
+
+## Running 
+
 To run it, you will need to pass the following arguments:  db host, db port, db user, db password, db name, and model file.
 
 ## Running on a non-CAIRIS server

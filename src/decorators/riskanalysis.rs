@@ -1,11 +1,11 @@
 use std::{collections::HashMap,collections::HashSet};
 use xml_oxide::{sax::StartElement,sax::EndElement};
-use crate::dimensions::role::Role;
-use crate::dimensions::asset::Asset;
-use crate::dimensions::vulnerability::{Vulnerability, VulnerabilityEnvironment};
-use crate::dimensions::attacker::{Attacker, AttackerEnvironment};
-use crate::dimensions::tag::Tag;
-use crate::dimensions::asset::AssetEnvironmentProperties;
+use cairis_core::dimensions::role::Role;
+use cairis_core::dimensions::asset::Asset;
+use cairis_core::dimensions::vulnerability::{Vulnerability, VulnerabilityEnvironment};
+use cairis_core::dimensions::attacker::{Attacker, AttackerEnvironment};
+use cairis_core::dimensions::tag::Tag;
+use cairis_core::dimensions::asset::AssetEnvironmentProperties;
 use crate::decorators::helpers::attributes_to_dict;
 use crate::decorators::parsedecorator::ParseDecorator;
 use crate::decorators::savedstate::SavedState;
